@@ -1,13 +1,18 @@
 {
   "name": "proxy-server",
   "version": "1.0.0",
-  "description": "A simple proxy server using Node.js and Express",
+  "description": "A simple proxy server for api.themoviedb.org",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.17.1",
-    "axios": "^0.21.1"
-  }
+    "axios": "^0.21.1",
+    "express": "^4.17.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "author": "",
+  "license": "ISC"
 }
