@@ -33,11 +33,8 @@ if (cluster.isMaster) {
       console.log(`Proxying request to: ${apiUrl}`); // Log the proxied URL
 
       // 设置API请求的headers
-      const headers = {};
-      for (let [key, value] of Object.entries(req.headers)) {
-        headers[key] = value;
-      }
-      headers['Host'] = 'api.themoviedb.org';
+      const headers = { ...req.headers };
+      delete headers.host;
 
       // 创建一个忽略 SSL 错误的 agent
       const agent = new https.Agent({ rejectUnauthorized: false });
@@ -54,7 +51,7 @@ if (cluster.isMaster) {
       // 设置响应的状态码和headers
       res.status(response.status);
       for (let [key, value] of Object.entries(response.headers)) {
-        res.set(key, value);
+        res.set(key, Array.isArray(value) ? value.join('; ') : value);
       }
 
       // 返回API响应的内容
