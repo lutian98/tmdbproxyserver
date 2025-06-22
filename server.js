@@ -40,6 +40,7 @@ if (cluster.isMaster) {
       // 设置API请求的headers
       const headers = { ...req.headers };
       delete headers.host;
+      delete headers.referer; // 删除 referer 头，防止目标服务器的防盗链策略
 
       // 创建一个忽略 SSL 错误的 agent
       const agent = new https.Agent({ rejectUnauthorized: false });
@@ -62,8 +63,20 @@ if (cluster.isMaster) {
       // 返回API响应的内容
       response.data.pipe(res);
     } catch (error) {
-      console.error('Fetch error:', error.message); // Log the error message
-      res.status(500).send('Internal Server Error');
+      // 增强错误处理
+      if (error.response) {
+        // 请求已发出，但服务器响应的状态码不在 2xx 范围内
+        console.error(`Error from upstream: Status ${error.response.status}`);
+        res.status(error.response.status).send('Error from upstream server.');
+      } else if (error.request) {
+        // 请求已发出，但没有收到响应
+        console.error('No response received from upstream:', error.request);
+        res.status(502).send('Bad Gateway: No response from upstream server.');
+      } else {
+        // 在设置请求时触发了错误
+        console.error('Error setting up request:', error.message);
+        res.status(500).send('Internal Server Error');
+      }
     }
   });
 
