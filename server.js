@@ -27,8 +27,13 @@ if (cluster.isMaster) {
       const url = new URL(req.url, `http://${req.headers.host}`);
       const searchParams = url.searchParams;
 
+      // 根据请求路径判断目标主机
+      const targetHost = url.pathname.startsWith('/t/p/')
+        ? 'https://image.tmdb.org'
+        : 'https://api.themoviedb.org';
+
       // 设置代理API请求的URL地址
-      const apiUrl = `https://api.themoviedb.org${url.pathname}?${searchParams.toString()}`;
+      const apiUrl = `${targetHost}${url.pathname}?${searchParams.toString()}`;
 
       console.log(`Proxying request to: ${apiUrl}`); // Log the proxied URL
 
