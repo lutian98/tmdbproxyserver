@@ -55,3 +55,17 @@ services:
       - "8080:3000" # 将这里的 "3333" 修改为您想要的端口
     restart: always
 ```
+修改完毕后，重新执行 docker-compose up --build -d 即可生效。
+
+### 在 Jellyfin / Emby 中使用
+在您的媒体服务器设置中，找到与 TMDB 相关的地址配置，将其替换为您的代理服务器地址：
+
+- API 地址 : http://<你的服务器IP>:3333
+- 图片地址 : http://<你的服务器IP>:3333
+保存设置后，您的媒体服务器就会通过此代理来刮削元数据和图片了。
+
+## 📝 致谢
+本项目的搭建思路和代码实现得到了以下项目和工具的启发和帮助，特此感谢：
+
+- sebastian0619/tmdbproxyserver
+- Google Gemini
